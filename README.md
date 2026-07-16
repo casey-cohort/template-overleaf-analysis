@@ -1,2 +1,75 @@
 # template-overleaf-analysis
 Template repository for the R analysis portion of an overleaf project
+
+## Setup
+
+1. Create both an analysis and [manuscript](https://github.com/casey-cohort/template-overleaf-manuscript) repository from the templates. 
+1. Create a [personal access](https://github.com/settings/personal-access-tokens) (PAT) token with read and write access to the manuscript
+repository. 
+1. In this (analysis) repository, go to Settings > Secrets and Variables > Actions, and
+create a new "Repository Secret". Paste the PAT into the "Secret" field and title it "MANUSCRIPT_PAT". 
+1. Next click the "Variables" tab, and create a "Repository Variable". Title this one "MANUSCRIPT_REPO", and enter the name of your manuscript repo, including its owner. E.g. "a-einstein/relativity-manuscript". 
+1. Delete this file and write a meaningful README file. 
+
+## Usage
+
+Write figures, tables, etc. to the `tables_figures` directory. Write LateX files
+to the `tex` directory. Whenever you push a change to these directories, they will
+be copied to the manuscript directory as `tables_figures_sync` and `tex_sync`. These
+will be overwritten in the target directory!
+
+A file `tex_helpers.R` is included to set up the LateX variables in R. It includes functions to:
+
+### Write a tex variable list
+
+`write_tex_vars` takes a named list and exports a .tex file that you can `%include` into your 
+LateX manuscript to dynamically update formatted numbers or strings.
+
+E.g. 
+
+```r
+source('tex_helpers.R')
+write_tex_vars(list(a = 1, b = 1.2345, c = 1000000, d = 'dog'), 'test.tex')
+```
+
+creates this file:
+
+```tex
+\newcommand{\a}{1}
+\newcommand{\b}{1.23}
+\newcommand{\c}{1,000,000}
+\newcommand{\d}{dog}
+```
+
+Note that the numbers have been formatted. See the manuscript repository for details about
+how to use these `\newcommand` shortcuts in your manuscript. 
+
+### Write a single tex variable
+
+If you want to customize individual tex values, you can handle the writing of the tex file
+yourself and use the function `texify`. 
+
+E.g. 
+
+```r
+texify('e', exp(1))
+
+## [1] "\\newcommand{\\e}{2.72}"
+```
+
+### Nearly/More Than
+
+Since we commonly use phrases like "almost", "nearly", "at least", or "more than" when 
+describing numbers in a manuscript, some convenience functions are also included to be 
+used in conjuction with the tex function. 
+
+```r
+nearly(9871, by = 10000) # "There are nearly ### instances per year."
+
+## [1] 10000
+
+more_than(58, by = 50) # "The study included more than ### interviews." 
+
+## [1] 50
+```
+
