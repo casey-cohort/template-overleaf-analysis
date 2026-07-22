@@ -4,12 +4,12 @@ Template repository for the R analysis portion of an overleaf project
 ## Setup
 
 1. Create both an analysis and [manuscript](https://github.com/casey-cohort/template-overleaf-manuscript) repository from the templates. 
-1. Create a [personal access](https://github.com/settings/personal-access-tokens) (PAT) token with read and write access to the manuscript
-repository. 
+1. Create a [personal access](https://github.com/settings/personal-access-tokens) (PAT) token with read and write access to the manuscript repository. 
 1. In this (analysis) repository, go to Settings > Secrets and Variables > Actions, and
 create a new "Repository Secret". Paste the PAT into the "Secret" field and title it "MANUSCRIPT_PAT". 
 1. Next click the "Variables" tab, and create a "Repository Variable". Title this one "MANUSCRIPT_REPO", and enter the name of your manuscript repo, including its owner. E.g. "a-einstein/relativity-manuscript". 
-1. Delete this file and write a meaningful README file. 
+1. Make sure Actions are enabled under Settings > General > Actions permissions.
+1. Update README file to reflect your project.
 
 ## Usage
 
@@ -17,6 +17,10 @@ Write figures, tables, etc. to the `tables_figures` directory. Write LateX files
 to the `tex` directory. Whenever you push a change to these directories, they will
 be copied to the manuscript directory as `tables_figures_sync` and `tex_sync`. These
 will be overwritten in the target directory!
+
+By convention the dynamic values file is `tex/analysis-values.tex` — the manuscript
+template already `\input`s it as `tex_sync/analysis-values.tex`. Use another name only
+if you also update the `\input` line(s) in the manuscript's `main.tex`.
 
 A file `tex_helpers.R` is included to set up the LateX variables in R. It includes functions to:
 
@@ -29,7 +33,7 @@ E.g.
 
 ```r
 source('tex_helpers.R')
-write_tex_vars(list(a = 1, b = 1.2345, c = 1000000, d = 'dog'), 'test.tex')
+write_tex_vars(list(a = 1, b = 1.2345, c = 1000000, d = 'dog'), 'tex/analysis-values.tex')
 ```
 
 creates this file:
@@ -56,6 +60,13 @@ texify('e', exp(1))
 
 ## [1] "\\newcommand{\\e}{2.72}"
 ```
+
+Note that for character values, `texify` (and therefore `write_tex_vars`)
+applies two automatic substitutions: `%` is escaped to `\%` for LaTeX, and
+parentheses are rewritten to square brackets so confidence intervals render as
+`[1.2, 3.4]` instead of `(1.2, 3.4)`. Underscores in the variable *name* are
+stripped, since LaTeX command names can't contain them (`n_total` becomes
+`\ntotal`).
 
 ### Nearly/More Than
 

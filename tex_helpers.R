@@ -48,8 +48,18 @@ write_tex_vars <- function(l, path, digits = 2){
   stopifnot(is.list(l))
   stopifnot(!is.null(names(l)))
   stopifnot(is.character(path) && length(path) == 1)
-  stopifnot(is.numeric(digits) && length(digits == 1))
-  writeLines(sapply(names(l), \(.x) texify(.x, l[[.x]], digits)), path)
+  stopifnot(is.numeric(digits) && length(digits) == 1)
+  lines <- lapply(names(l), \(.x) texify(.x, l[[.x]], digits))
+  # texify() returns NULL for values it can't format (non-scalar, NA, etc.)
+  unformattable <- names(l)[vapply(lines, is.null, logical(1))]
+  if (length(unformattable)) {
+    stop(
+      "write_tex_vars: could not format these values (must be a single ",
+      "non-NA numeric or character): ",
+      paste(unformattable, collapse = ", ")
+    )
+  }
+  writeLines(unlist(lines), path)
 }
 
 # round DOWN to the nearest `by` -- for "more than X" phrasing (true value sits
