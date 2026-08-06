@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'figures/**'
+      - 'tables_figures/**'
       - 'tex/**'
       - '.github/workflows/sync-outputs.yml'
   workflow_dispatch:
@@ -21,32 +21,31 @@ jobs:
       - name: Checkout target repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ variables.MANUSCRIPT_REPO }}
-          token:: ${{ secrets.MANUSCRIPT_PAT }}
+          repository: ${{ vars.MANUSCRIPT_REPO }}
+          token: ${{ secrets.MANUSCRIPT_PAT }}
           path: target
 
       - name: Replace tables_figures contents
         run: |
-          rm -rf target/tables_figures_sync/
-          mkdir -p target/tables_figures_sync/
-          cp -R source/tables_figures/ target/tables_figures_sync/
-
+          rm -rf target/tables_figures_sync
+          mkdir -p target/tables_figures_sync
+          cp -R source/tables_figures/. target/tables_figures_sync/
 
       - name: Replace tex values
         run: |
           rm -rf target/tex_sync
-          cp source/tex/ target/tex_sync
+          mkdir -p target/tex_sync
+          cp -R source/tex/. target/tex_sync/
 
       - name: Commit and push
         working-directory: target
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tables_figures
-          git add tex
+          git add tables_figures_sync tex_sync
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Sync figures from wfbz_viz@${GITHUB_SHA::7}"
+            git commit -m "Sync outputs from analysis@${GITHUB_SHA::7}"
             git push
           fi
