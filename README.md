@@ -84,3 +84,10 @@ more_than(58, by = 50) # "The study included more than ### interviews."
 ## [1] 50
 ```
 
+## Example Analysis
+
+This repo contains a minimal example analysis pulled from the July 28, 2026 
+[Tidy Tuesday](https://github.com/rfordatascience/tidytuesday/tree/main/data/2026/2026-07-28),
+which has example data on tourism and animal sightings in Australia. 
+
+The example outputs are also included in the manuscript repo. 
