@@ -4,7 +4,7 @@ Template repository for the R analysis portion of an overleaf project
 ## Setup
 
 1. Create both an analysis and [manuscript](https://github.com/casey-cohort/template-overleaf-manuscript) repository from the templates. 
-1. Create a [personal access](https://github.com/settings/personal-access-tokens) (PAT) token with read and write access to the manuscript repository. 
+1. Create a **classic** [personal access](https://github.com/settings/personal-access-tokens) (PAT) token with read and write access to the manuscript repository. 
 1. In this (analysis) repository, go to Settings > Secrets and Variables > Actions, and
 create a new "Repository Secret". Paste the PAT into the "Secret" field and title it "MANUSCRIPT_PAT". 
 1. Next click the "Variables" tab, and create a "Repository Variable". Title this one "MANUSCRIPT_REPO", and enter the name of your manuscript repo, including its owner. E.g. "a-einstein/relativity-manuscript". 
